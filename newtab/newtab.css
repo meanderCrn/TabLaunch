@@ -1,0 +1,346 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh;
+}
+
+.container {
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+  padding: 0 24px;
+}
+
+/* Clock */
+.clock {
+  font-size: 72px;
+  font-weight: 200;
+  letter-spacing: 4px;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.date {
+  font-size: 16px;
+  color: #8888aa;
+  margin-bottom: 48px;
+}
+
+/* Bookmarks Grid */
+.bookmarks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+/* Bookmark Tile */
+.bookmark-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #e0e0e0;
+  cursor: pointer;
+  width: 100px;
+  transition: transform 0.15s ease;
+}
+
+.bookmark-tile:hover {
+  transform: translateY(-4px);
+}
+
+/* ── Edit Mode: iOS-style wiggle ── */
+@keyframes wiggle {
+  0%   { transform: rotate(-1.5deg); }
+  50%  { transform: rotate(1.5deg); }
+  100% { transform: rotate(-1.5deg); }
+}
+
+.edit-mode .bookmark-tile {
+  animation: wiggle 0.3s ease-in-out infinite;
+  cursor: grab;
+}
+
+.edit-mode .bookmark-tile:hover {
+  transform: none;
+}
+
+.edit-mode .bookmark-tile:active {
+  cursor: grabbing;
+}
+
+/* Floating clone that follows cursor */
+.drag-clone {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.9;
+  transform: scale(1.08);
+  animation: none !important;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
+}
+
+/* Ghost left behind in the grid */
+.drag-placeholder {
+  opacity: 0.15;
+  animation: none !important;
+}
+
+/* Delete badge (x button, top-left in edit mode) */
+.delete-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 22px;
+  height: 22px;
+  background: #E74C3C;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  line-height: 1;
+  z-index: 2;
+}
+
+.delete-badge:hover {
+  background: #c0392b;
+  transform: scale(1.15);
+}
+
+.bookmark-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.15s ease;
+}
+
+.bookmark-tile:hover .bookmark-icon {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.bookmark-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+/* Modify Button */
+.modify-btn {
+  margin-top: 36px;
+  padding: 8px 24px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background: transparent;
+  color: #8888aa;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modify-btn:hover {
+  border-color: #888;
+  color: #ccc;
+}
+
+.modify-btn.active {
+  background: #4A90D9;
+  border-color: #4A90D9;
+  color: #fff;
+}
+
+.bookmark-name {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+/* Add Button */
+.add-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  width: 100px;
+  color: #666;
+  transition: color 0.15s ease;
+}
+
+.add-tile:hover {
+  color: #aaa;
+}
+
+.add-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  border: 2px dashed #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  transition: border-color 0.15s ease;
+}
+
+.add-tile:hover .add-icon {
+  border-color: #888;
+}
+
+
+.add-label {
+  font-size: 12px;
+}
+
+/* Dialog */
+.dialog-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.dialog-overlay.active {
+  display: flex;
+}
+
+.dialog {
+  background: #2a2a3e;
+  border-radius: 16px;
+  padding: 32px;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.dialog h2 {
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.dialog label {
+  display: block;
+  font-size: 13px;
+  color: #8888aa;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.dialog input[type="text"],
+.dialog input[type="url"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  font-size: 14px;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.dialog input:focus {
+  border-color: #4A90D9;
+}
+
+/* Color Picker */
+.color-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch.selected {
+  border-color: #fff;
+}
+
+/* Buttons */
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary {
+  background: #4A90D9;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #3a7bc8;
+}
+
+.btn-secondary {
+  background: #444;
+  color: #ccc;
+}
+
+.btn-secondary:hover {
+  background: #555;
+}
+
+.btn-danger {
+  background: #E74C3C;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+}
