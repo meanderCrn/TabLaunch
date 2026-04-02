@@ -1,4 +1,4 @@
-# Click to New Tab
+# TabLaunch
 
 A Firefox extension that replaces the new tab page with a clean, customizable bookmark dashboard.
 
