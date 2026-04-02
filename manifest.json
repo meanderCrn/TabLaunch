@@ -1,8 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "Custom New Tab",
+  "name": "Click to New Tab",
   "version": "1.0.0",
   "description": "A customizable new tab page with bookmark sync across devices.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "click-to-new-tab@corncorn",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
   "permissions": [
     "storage",
     "tabs"

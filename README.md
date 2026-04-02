@@ -1,4 +1,4 @@
-# Custom New Tab
+# Click to New Tab
 
 A Firefox extension that replaces the new tab page with a clean, customizable bookmark dashboard.
 
