@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Click to New Tab",
+  "name": "TabLaunch",
   "version": "1.0.0",
   "description": "A customizable new tab page with bookmark sync across devices.",
   "browser_specific_settings": {
@@ -20,11 +20,15 @@
     "newtab": "newtab/newtab.html"
   },
   "icons": {
-    "48": "icons/icon-48.svg",
-    "96": "icons/icon-96.svg"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "64": "icons/icon-64.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
   },
   "browser_action": {
-    "default_icon": "icons/icon-48.svg",
+    "default_icon": "icons/icon-48.png",
     "default_title": "Add Bookmark",
     "default_popup": "popup/popup.html"
   }
