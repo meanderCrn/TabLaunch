@@ -76,7 +76,7 @@ function loadBookmarks() {
 }
 
 function saveBookmarks() {
-  return store.set({ bookmarks });
+  return store.set({ bookmarks }).then(() => updateStorageUsage());
 }
 
 browser.storage.onChanged.addListener((changes, area) => {
@@ -478,5 +478,27 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// ── Storage Usage ──
+function updateStorageUsage() {
+  const area = store.area() === "sync" ? browser.storage.sync : browser.storage.local;
+  const quota = store.area() === "sync" ? 102400 : 5242880; // 100 KB sync, 5 MB local
+
+  area.getBytesInUse(null).then((bytes) => {
+    const pct = Math.min((bytes / quota) * 100, 100);
+    const fill = document.getElementById("storage-bar-fill");
+    const text = document.getElementById("storage-text");
+
+    fill.style.width = pct.toFixed(1) + "%";
+    fill.classList.toggle("warn", pct >= 60 && pct < 85);
+    fill.classList.toggle("critical", pct >= 85);
+
+    const usedKB = (bytes / 1024).toFixed(1);
+    const totalKB = (quota / 1024).toFixed(0);
+    text.textContent = `${usedKB} / ${totalKB} KB (${pct.toFixed(1)}%)`;
+  }).catch(() => {
+    document.getElementById("storage-text").textContent = "Storage info unavailable";
+  });
+}
+
 // ── Init ──
-loadBookmarks();
+loadBookmarks().then(() => updateStorageUsage());

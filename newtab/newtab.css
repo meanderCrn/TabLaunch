@@ -233,6 +233,43 @@ body {
   font-size: 12px;
 }
 
+/* Storage Usage */
+.storage-usage {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.storage-bar {
+  width: 120px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.storage-bar-fill {
+  height: 100%;
+  background: #4A90D9;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.storage-bar-fill.warn {
+  background: #e6a23c;
+}
+
+.storage-bar-fill.critical {
+  background: #E74C3C;
+}
+
+.storage-text {
+  font-size: 11px;
+  color: #555;
+}
+
 /* Dialog */
 .dialog-overlay {
   display: none;
