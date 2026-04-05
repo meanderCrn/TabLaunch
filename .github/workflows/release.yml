@@ -26,17 +26,13 @@ jobs:
             exit 1
           fi
 
-      - name: Build extension zip
-        run: |
-          zip -r tablaunch-${{ steps.version.outputs.VERSION }}.zip \
-            manifest.json \
-            storage.js \
-            icons/ \
-            newtab/ \
-            popup/
+      - name: Build Firefox and Chrome extensions
+        run: bash build.sh
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: tablaunch-${{ steps.version.outputs.VERSION }}.zip
+          files: |
+            dist/tablaunch-${{ steps.version.outputs.VERSION }}-firefox.zip
+            dist/tablaunch-${{ steps.version.outputs.VERSION }}-chrome.zip
           generate_release_notes: true
