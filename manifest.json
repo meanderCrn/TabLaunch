@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "TabLaunch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A customizable new tab page with bookmark sync across devices.",
   "browser_specific_settings": {
     "gecko": {
