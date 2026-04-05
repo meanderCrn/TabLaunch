@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify manifest version matches tag
+        run: |
+          MANIFEST_VERSION=$(jq -r '.version' manifest.json)
+          if [ "$MANIFEST_VERSION" != "${{ steps.version.outputs.VERSION }}" ]; then
+            echo "Error: manifest.json version ($MANIFEST_VERSION) does not match tag (${{ steps.version.outputs.VERSION }})"
+            exit 1
+          fi
+
+      - name: Build extension zip
+        run: |
+          zip -r tablaunch-${{ steps.version.outputs.VERSION }}.zip \
+            manifest.json \
+            storage.js \
+            icons/ \
+            newtab/ \
+            popup/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tablaunch-${{ steps.version.outputs.VERSION }}.zip
+          generate_release_notes: true
