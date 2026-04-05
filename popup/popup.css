@@ -46,29 +46,6 @@ input:focus {
   border-color: #4A90D9;
 }
 
-.color-picker {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.color-swatch {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.color-swatch:hover {
-  transform: scale(1.15);
-}
-
-.color-swatch.selected {
-  border-color: #fff;
-}
-
 .btn-save {
   width: 100%;
   padding: 9px;

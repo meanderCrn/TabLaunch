@@ -1,8 +1,6 @@
 const form = document.getElementById("bookmark-form");
 const inputName = document.getElementById("input-name");
 const inputUrl = document.getElementById("input-url");
-const inputColorValue = document.getElementById("input-color-value");
-const colorPicker = document.getElementById("color-picker");
 const status = document.getElementById("status");
 
 // Auto-fill URL with current tab
@@ -12,21 +10,6 @@ browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
     inputName.value = tabs[0].title || "";
   }
 }).catch((err) => console.error("tabs.query failed:", err));
-
-// Color picker
-function selectColor(color) {
-  inputColorValue.value = color;
-  document.querySelectorAll(".color-swatch").forEach((swatch) => {
-    swatch.classList.toggle("selected", swatch.dataset.color === color);
-  });
-}
-
-selectColor("#4A90D9");
-
-colorPicker.addEventListener("click", (e) => {
-  const swatch = e.target.closest(".color-swatch");
-  if (swatch) selectColor(swatch.dataset.color);
-});
 
 // Save bookmark
 form.addEventListener("submit", (e) => {
@@ -42,7 +25,6 @@ form.addEventListener("submit", (e) => {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
     name: inputName.value.trim(),
     url: url,
-    color: inputColorValue.value,
   };
 
   console.log("Saving entry:", entry);

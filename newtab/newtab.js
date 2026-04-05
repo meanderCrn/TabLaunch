@@ -3,6 +3,8 @@ let bookmarks = [];
 let editingIndex = -1;
 let editMode = false;
 
+const FALLBACK_COLOR = "#4A90D9";
+
 // Drag state
 let isDragging = false;
 let draggedIndex = -1;
@@ -20,10 +22,8 @@ const form = document.getElementById("bookmark-form");
 const dialogTitle = document.getElementById("dialog-title");
 const inputName = document.getElementById("input-name");
 const inputUrl = document.getElementById("input-url");
-const inputColorValue = document.getElementById("input-color-value");
 const btnCancel = document.getElementById("btn-cancel");
 const btnDelete = document.getElementById("btn-delete");
-const colorPicker = document.getElementById("color-picker");
 const modifyBtn = document.getElementById("modify-btn");
 
 // ── Clock ──
@@ -98,6 +98,48 @@ function toggleEditMode() {
 
 modifyBtn.addEventListener("click", toggleEditMode);
 
+// ── Export ──
+document.getElementById("export-btn").addEventListener("click", () => {
+  const data = bookmarks.map(({ name, url }) => ({ name, url }));
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "tablaunch-bookmarks.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// ── Import ──
+document.getElementById("import-btn").addEventListener("click", () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!Array.isArray(data)) throw new Error("Invalid format");
+        const imported = data
+          .filter((item) => item.name && item.url)
+          .map((item) => ({
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+            name: item.name,
+            url: item.url,
+          }));
+        bookmarks.push(...imported);
+        saveBookmarks().then(() => render());
+      } catch (e) {
+        alert("Invalid bookmark file.");
+      }
+    };
+    reader.readAsText(file);
+  });
+  input.click();
+});
+
 // ── Rendering ──
 function getInitials(name) {
   return name
@@ -144,18 +186,23 @@ function render() {
 
     const icon = document.createElement("div");
     icon.className = "bookmark-icon";
-    icon.style.background = bm.color || "#4A90D9";
 
     const faviconUrl = getFaviconUrl(bm.url);
     if (faviconUrl) {
+      icon.classList.add("has-favicon");
       const img = document.createElement("img");
       img.src = faviconUrl;
       img.onerror = () => {
         img.remove();
+        icon.classList.remove("has-favicon");
+        icon.classList.add("has-initials");
+        icon.style.background = FALLBACK_COLOR;
         icon.textContent = getInitials(bm.name);
       };
       icon.appendChild(img);
     } else {
+      icon.classList.add("has-initials");
+      icon.style.background = FALLBACK_COLOR;
       icon.textContent = getInitials(bm.name);
     }
 
@@ -355,7 +402,6 @@ function openAddDialog() {
   dialogTitle.textContent = "Add Bookmark";
   inputName.value = "";
   inputUrl.value = "";
-  selectColor("#4A90D9");
   btnDelete.style.display = "none";
   overlay.classList.add("active");
   inputName.focus();
@@ -368,7 +414,6 @@ function openEditDialog(index) {
   dialogTitle.textContent = "Edit Bookmark";
   inputName.value = bm.name;
   inputUrl.value = bm.url;
-  selectColor(bm.color || "#4A90D9");
   btnDelete.style.display = "inline-block";
   overlay.classList.add("active");
   inputName.focus();
@@ -376,13 +421,6 @@ function openEditDialog(index) {
 
 function closeDialog() {
   overlay.classList.remove("active");
-}
-
-function selectColor(color) {
-  inputColorValue.value = color;
-  document.querySelectorAll(".color-swatch").forEach((swatch) => {
-    swatch.classList.toggle("selected", swatch.dataset.color === color);
-  });
 }
 
 // ── Event Listeners ──
@@ -400,7 +438,6 @@ form.addEventListener("submit", (e) => {
       : bookmarks[editingIndex].id,
     name: inputName.value.trim(),
     url: url,
-    color: inputColorValue.value,
   };
 
   if (editingIndex === -1) {
@@ -439,11 +476,6 @@ document.addEventListener("keydown", (e) => {
       toggleEditMode();
     }
   }
-});
-
-colorPicker.addEventListener("click", (e) => {
-  const swatch = e.target.closest(".color-swatch");
-  if (swatch) selectColor(swatch.dataset.color);
 });
 
 // ── Init ──

@@ -136,23 +136,37 @@ body {
   font-weight: 600;
   color: #fff;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.15s ease;
 }
 
-.bookmark-tile:hover .bookmark-icon {
+.bookmark-icon.has-favicon {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.bookmark-icon.has-initials {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bookmark-tile:hover .bookmark-icon.has-initials {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .bookmark-icon img {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+}
+
+.toolbar {
+  margin-top: 36px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
 }
 
 /* Modify Button */
 .modify-btn {
-  margin-top: 36px;
   padding: 8px 24px;
   border: 1px solid #444;
   border-radius: 8px;
@@ -274,31 +288,6 @@ body {
 
 .dialog input:focus {
   border-color: #4A90D9;
-}
-
-/* Color Picker */
-.color-picker {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.color-swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.15s ease, transform 0.15s ease;
-}
-
-.color-swatch:hover {
-  transform: scale(1.15);
-}
-
-.color-swatch.selected {
-  border-color: #fff;
 }
 
 /* Buttons */

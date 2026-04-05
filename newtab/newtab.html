@@ -15,7 +15,11 @@
       <!-- Bookmarks rendered here -->
     </div>
 
-    <button class="modify-btn" id="modify-btn">Modify</button>
+    <div class="toolbar">
+      <button class="modify-btn" id="modify-btn">Modify</button>
+      <button class="modify-btn" id="export-btn">Export</button>
+      <button class="modify-btn" id="import-btn">Import</button>
+    </div>
   </div>
 
   <!-- Add / Edit Dialog -->
@@ -28,19 +32,6 @@
 
         <label for="input-url">URL</label>
         <input type="url" id="input-url" placeholder="https://github.com" required>
-
-        <label for="input-color">Color</label>
-        <div class="color-picker" id="color-picker">
-          <button type="button" class="color-swatch" data-color="#4A90D9" style="background:#4A90D9"></button>
-          <button type="button" class="color-swatch" data-color="#E74C3C" style="background:#E74C3C"></button>
-          <button type="button" class="color-swatch" data-color="#2ECC71" style="background:#2ECC71"></button>
-          <button type="button" class="color-swatch" data-color="#F39C12" style="background:#F39C12"></button>
-          <button type="button" class="color-swatch" data-color="#9B59B6" style="background:#9B59B6"></button>
-          <button type="button" class="color-swatch" data-color="#1ABC9C" style="background:#1ABC9C"></button>
-          <button type="button" class="color-swatch" data-color="#E67E22" style="background:#E67E22"></button>
-          <button type="button" class="color-swatch" data-color="#34495E" style="background:#34495E"></button>
-        </div>
-        <input type="hidden" id="input-color-value" value="#4A90D9">
 
         <div class="dialog-actions">
           <button type="button" class="btn btn-secondary" id="btn-cancel">Cancel</button>
